@@ -4,4 +4,9 @@
     <string name="title">title</string>
     <string name="subtitle">subtitle</string>
     <string name="save">save</string>
+    <string-array name="priority_array">
+        <item>High</item>
+        <item>Normal</item>
+        <item>Low</item>
+    </string-array>
 </resources>
