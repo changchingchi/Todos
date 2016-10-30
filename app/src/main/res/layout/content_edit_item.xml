@@ -19,18 +19,16 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:weightSum="1"
+        android:gravity="end"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4">
+            android:layout_weight="0.8"
+            android:layout_gravity="end" >
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -54,117 +52,90 @@
         android:layout_weight="4"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
+        android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+            android:layout_weight="1"
+            android:baselineAligned="false">
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_today"
-                    android:id="@+id/imageView4"
-                    android:layout_weight="1"
+                    android:id="@+id/imageDate"
+                    android:layout_weight="0.2"
                     android:layout_gravity="center"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4">
-
                 <TextView
                     android:text="TextView"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/textView4"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
+                    android:id="@+id/textViewDate"
+                    android:layout_weight="0.8" />
         </LinearLayout>
-
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:baselineAligned="false">
 
-            <LinearLayout
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_menu_today"
+                android:id="@+id/imageViewTime"
+                android:layout_weight="0.2"
+                android:layout_gravity="center"/>
+            <TextView
+                android:text="TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_menu_today"
-                    android:id="@+id/imageView1"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4">
-
-                <TextView
-                    android:text="TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/textView3"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
+                android:id="@+id/textViewTime"
+                android:layout_weight="0.8" />
         </LinearLayout>
-
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:baselineAligned="false">
 
-            <LinearLayout
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_menu_today"
+                android:id="@+id/imageViewPriority"
+                android:layout_weight="0.2"
+                android:layout_gravity="center"/>
+            <TextView
+                android:text="TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_menu_today"
-                    android:id="@+id/imageView2"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4">
-
-                <TextView
-                    android:text="TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/textView"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
+                android:id="@+id/textViewPriority"
+                android:layout_weight="0.8" />
         </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:baselineAligned="false">
 
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_menu_today"
+                android:id="@+id/imageViewDescription"
+                android:layout_weight="0.2"
+                android:layout_gravity="center"/>
+            <TextView
+                android:text="TextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/textViewDescription"
+                android:layout_weight="0.8" />
+        </LinearLayout>
     </LinearLayout>
-
-
 </LinearLayout>
