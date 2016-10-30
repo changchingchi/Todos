@@ -23,14 +23,10 @@
         android:weightSum="1"
         android:gravity="end"
         android:baselineAligned="false">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:layout_gravity="end" >
             <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                android:layout_weight="0.8"
+                android:layout_gravity="end"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/task"
                 android:orientation="horizontal">
@@ -44,8 +40,6 @@
                     android:maxLines="1"
                     android:id="@+id/taskET" />
             </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
     </LinearLayout>
 
     <LinearLayout
@@ -60,19 +54,22 @@
             android:layout_weight="1"
             android:baselineAligned="false">
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_menu_today"
-                    android:id="@+id/imageDate"
-                    android:layout_weight="0.2"
-                    android:layout_gravity="center"/>
-                <TextView
-                    android:text="TextView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/textViewDate"
-                    android:layout_weight="0.8" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                app:srcCompat="@drawable/calendar"
+                android:id="@+id/imageViewDate"
+                android:layout_weight="0.2"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:id="@+id/textViewDate"
+                android:layout_weight="0.8"
+                android:clickable="true"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -83,15 +80,17 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_menu_today"
+                android:layout_height="36dp"
+                app:srcCompat="@drawable/clock"
                 android:id="@+id/imageViewTime"
                 android:layout_weight="0.2"
                 android:layout_gravity="center"/>
+
             <TextView
                 android:text="TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:gravity="center|left"
                 android:id="@+id/textViewTime"
                 android:layout_weight="0.8" />
         </LinearLayout>
@@ -104,15 +103,17 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_menu_today"
+                android:layout_height="36dp"
+                app:srcCompat="@drawable/flag"
                 android:id="@+id/imageViewPriority"
                 android:layout_weight="0.2"
                 android:layout_gravity="center"/>
+
             <TextView
                 android:text="TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:gravity="center|left"
                 android:id="@+id/textViewPriority"
                 android:layout_weight="0.8" />
         </LinearLayout>
@@ -125,17 +126,18 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_menu_today"
+                android:layout_height="36dp"
+                app:srcCompat="@drawable/notepad"
                 android:id="@+id/imageViewDescription"
                 android:layout_weight="0.2"
                 android:layout_gravity="center"/>
-            <TextView
-                android:text="TextView"
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:id="@+id/textViewDescription"
-                android:layout_weight="0.8" />
+                android:id="@+id/EditTextDescription"
+                android:gravity="center|left"
+                android:layout_weight="0.8"
+                android:hint="description" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
