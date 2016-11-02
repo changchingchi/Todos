@@ -25,7 +25,7 @@ public class EditPriorityFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_priority, container, false);
 
         String [] values =
-                {"Time at Residence","Under 6 months","6-12 months","1-2 years","2-4 years","4-8 years","8-15 years","Over 15 years",};
+                {"High","Normal","Low",};
         final Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, values);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
