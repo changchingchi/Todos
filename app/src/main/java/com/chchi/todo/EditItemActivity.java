@@ -55,7 +55,7 @@ public class EditItemActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_edititem, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -73,16 +73,16 @@ public class EditItemActivity extends AppCompatActivity implements DatePickerDia
     // attach to an onclick handler to show the date picker
     private void showDatePickerDialog() {
         EditDateFragment newFragment = new EditDateFragment();
-        newFragment.show(getFragmentManager(), "datePicker");
+        newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
     private void showTimePickerDialog() {
         EditTimeFragment newFragment = new EditTimeFragment();
-        newFragment.show(getFragmentManager(), "timePicker");
+        newFragment.show(getSupportFragmentManager(), "timePicker");
     }
     private void showPriorityPickerDialog(){
         EditPriorityFragment newFragment = new EditPriorityFragment();
-        newFragment.show(getFragmentManager(),"priorityPicker");
+        newFragment.show(getSupportFragmentManager(),"priorityPicker");
     }
 
     // handle the date selected by implement onDateSetLister.
