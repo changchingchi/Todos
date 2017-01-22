@@ -40,6 +40,7 @@ public class EditItemFragment extends DialogFragment{
         // Use `newInstance` instead as shown below
     }
 
+
     public static EditItemFragment newInstance(String title) {
         EditItemFragment frag = new EditItemFragment();
         Bundle args = new Bundle();
