@@ -62,13 +62,13 @@
                 android:layout_gravity="center"/>
 
             <TextView
-                android:text="TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
                 android:id="@+id/textViewDate"
                 android:layout_weight="0.8"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:hint="Date" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -86,12 +86,12 @@
                 android:layout_gravity="center"/>
 
             <TextView
-                android:text="TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
                 android:id="@+id/textViewTime"
-                android:layout_weight="0.8" />
+                android:layout_weight="0.8"
+                android:hint="Time" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -109,12 +109,12 @@
                 android:layout_gravity="center"/>
 
             <TextView
-                android:text="TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
                 android:id="@+id/textViewPriority"
-                android:layout_weight="0.8" />
+                android:layout_weight="0.8"
+                android:hint="Priority" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -130,13 +130,14 @@
                 android:id="@+id/imageViewDescription"
                 android:layout_weight="0.2"
                 android:layout_gravity="center"/>
+
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/EditTextDescription"
                 android:gravity="center|left"
                 android:layout_weight="0.8"
-                android:hint="description" />
+                android:hint="Note" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

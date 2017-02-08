@@ -15,7 +15,7 @@ import android.widget.TimePicker;
 import com.chchi.todo.FragmentController.EditDateFragment;
 import com.chchi.todo.FragmentController.EditPriorityFragment;
 import com.chchi.todo.FragmentController.EditTimeFragment;
-
+//no use
 public class EditItemActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener{
 
@@ -55,8 +55,12 @@ public class EditItemActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.menu_edititem, menu);
+        return false;
+    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return false;
     }
 
     @Override

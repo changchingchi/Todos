@@ -13,26 +13,53 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.chchi.todo.FireBaseUtils.Firebase;
+import com.chchi.todo.ListViewController.Todo;
 import com.chchi.todo.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.Calendar;
+import java.util.HashMap;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by chchi on 11/2/16.
  */
 
 public class EditItemFragment extends DialogFragment{
-    TextView datePicker;
-    TextView timePicker;
-    TextView priorityPicker;
+    private static final String USER_CHILD = "users" ;
+    //ButterKnife Binding
+    @Bind(R.id.taskET)
+    EditText mTaskEditText;
+    @Bind(R.id.textViewDate)
+    TextView mDateTextView;
+    @Bind(R.id.textViewTime)
+    TextView mTimeTextView;
+    @Bind(R.id.textViewPriority)
+    TextView mPriorityTextView;
+    @Bind(R.id.EditTextDescription)
+    EditText mDescriptionEditText;
+    Todo ClickedTodo;
+    private FirebaseUser mFirebaseUser;
+    private FirebaseAuth mFirebaseAuth;
+    public DatabaseReference mFirebaseDatabaseReference;
+    private boolean isEditedItem;
+    private String ClickedTodoKey=null;
 
     public EditItemFragment() {
         // Empty constructor is required for DialogFragment
@@ -41,19 +68,43 @@ public class EditItemFragment extends DialogFragment{
     }
 
 
-    public static EditItemFragment newInstance(String title) {
-        EditItemFragment frag = new EditItemFragment();
-        Bundle args = new Bundle();
-        args.putString("title", title);
-        frag.setArguments(args);
-        return frag;
+    public static EditItemFragment newInstance() {
+        return new EditItemFragment();
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_edit_item, container);
         setHasOptionsMenu(true);
+        ButterKnife.bind(this,rootView);
+
+        if(getArguments()!=null){
+            //when users clicked the item, we need to populate the item back to fragment.
+            isEditedItem = true;
+            ClickedTodo = getArguments().getParcelable("todoItem");
+            ClickedTodoKey = getArguments().getString("todoKey");
+            if(ClickedTodo.getTitle()!=null || !ClickedTodo.getTitle().isEmpty()) {
+                mTaskEditText.setText(ClickedTodo.getTitle());
+            }
+            if(ClickedTodo.getDescription()!=null || !ClickedTodo.getDescription().isEmpty()) {
+                mDescriptionEditText.setText(ClickedTodo.getDescription());
+            }
+            if(ClickedTodo.getTime()!=null || !ClickedTodo.getTime().isEmpty()) {
+                mTimeTextView.setText(ClickedTodo.getTime());
+            }
+            if(ClickedTodo.getDate()!=null || !ClickedTodo.getDate().isEmpty()) {
+                mDateTextView.setText(ClickedTodo.getDate());
+            }
+            if(ClickedTodo.getPriority()!=null || !ClickedTodo.getPriority().isEmpty()) {
+                mPriorityTextView.setText(ClickedTodo.getPriority());
+            }
+        }
+
+
+
+        mFirebaseDatabaseReference = Firebase.getDatabase().getReference();
+        mFirebaseAuth = Firebase.getFirebaseAuth();
+        mFirebaseUser= mFirebaseAuth.getCurrentUser();
         return rootView;
     }
 
@@ -63,22 +114,19 @@ public class EditItemFragment extends DialogFragment{
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        datePicker = (TextView) view.findViewById(R.id.textViewDate);
-        datePicker.setOnClickListener(new View.OnClickListener() {
+        mDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
             }
         });
-        timePicker = (TextView) view.findViewById(R.id.textViewTime);
-        timePicker.setOnClickListener(new View.OnClickListener() {
+        mTimeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimePickerDialog();
             }
         });
-        priorityPicker = (TextView) view.findViewById(R.id.textViewPriority);
-        priorityPicker.setOnClickListener(new View.OnClickListener() {
+        mPriorityTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPriorityPickerDialog();
@@ -90,14 +138,55 @@ public class EditItemFragment extends DialogFragment{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_edititem,menu);
+        super.onCreateOptionsMenu(menu,inflater);
 
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.save:
+                PostToFireBase();
+                return true;
+
+            default:
+                break;
+        }
+
+        return false;
+    }
+
+    private void PostToFireBase() {
+        if(isValidInput()){
+            HashMap<String,String> map = new HashMap<>();
+            map.put("title",mTaskEditText.getText().toString());
+            map.put("description",mDescriptionEditText.getText().toString());
+            map.put("date",mDateTextView.getText().toString());
+            map.put("time",mTimeTextView.getText().toString());
+            map.put("priority",mPriorityTextView.getText().toString());
+            Todo todo = new Todo(map);
+            if(isEditedItem){
+                //user wants to update item.
+                mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(ClickedTodoKey).setValue(todo);
+                //reset flag for new edit item.
+                isEditedItem = false;
+            }else{
+                //user wants to add new item.
+                mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
+                        .push().setValue(todo);
+            }
+            this.dismiss();
+        }else{
+            Toast.makeText(getActivity(),"invalid inputs", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.save).setVisible(true);
+         MenuItem item= menu.findItem(R.id.save);
+        item.setVisible(true);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -128,14 +217,19 @@ public class EditItemFragment extends DialogFragment{
     TimePickerDialog.OnTimeSetListener onTime = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            timePicker.setText(hourOfDay + ":" + minute);
+            String min;
+            min = (minute<10) ? "0"+minute : minute+"";
+            mTimeTextView.setText(hourOfDay + ":" + min);
 
         }
     };
     DatePickerDialog.OnDateSetListener onDate = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            datePicker.setText(year + "/" + monthOfYear + "/" + dayOfMonth);
+            String month, day;
+            month = (monthOfYear<10) ? "0"+(monthOfYear+1) : (monthOfYear+1)+"";
+            day = (dayOfMonth<10) ? "0"+(dayOfMonth) : (dayOfMonth)+"";
+            mDateTextView.setText(year + "/" + (month) + "/" + day);
 
         }
     };
@@ -154,4 +248,10 @@ public class EditItemFragment extends DialogFragment{
         super.onResume();
     }
 
+    public boolean isValidInput() {
+//        return !(mTaskEditText.getText().toString().isEmpty()||
+//                mDateTextView.getText().toString().isEmpty()||
+//                mTimeTextView.getText().toString().isEmpty());
+        return !(mTaskEditText.getText().toString().isEmpty());
+    }
 }
