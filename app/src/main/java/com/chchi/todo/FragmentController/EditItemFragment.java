@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by chchi on 11/2/16.
  */
 
-public class EditItemFragment extends DialogFragment{
+public class EditItemFragment extends DialogFragment implements EditPriorityFragment.EditPriorityListener{
     private static final String USER_CHILD = "users" ;
     //ButterKnife Binding
     @Bind(R.id.taskET)
@@ -211,6 +211,8 @@ public class EditItemFragment extends DialogFragment{
 
     private void showPriorityPickerDialog() {
         EditPriorityFragment newFragment = new EditPriorityFragment();
+        // SETS the target fragment for use later when sending results
+        newFragment.setTargetFragment(this, 300);
         newFragment.show(getFragmentManager(), "priorityPicker");
     }
 
@@ -253,5 +255,11 @@ public class EditItemFragment extends DialogFragment{
 //                mDateTextView.getText().toString().isEmpty()||
 //                mTimeTextView.getText().toString().isEmpty());
         return !(mTaskEditText.getText().toString().isEmpty());
+    }
+
+    @Override
+    public void onFinishEditPriority(String priority) {
+//        Toast.makeText(getActivity(), "Hi, "+priority, Toast.LENGTH_SHORT).show();
+        mPriorityTextView.setText(priority);
     }
 }

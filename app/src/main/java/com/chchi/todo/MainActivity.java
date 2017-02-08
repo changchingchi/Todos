@@ -113,17 +113,29 @@ public class MainActivity extends AppCompatActivity {
                                     .getDrawable(MainActivity.this,
                                             R.drawable.priority_low));
                 } else {
-//                    Glide.with(MainActivity.this)
-//                            .load(Todo.getPriority())
-//                            .into(viewHolder.messengerImageView);
+                    // setup flag for priority
+                   if(Todo.getPriority().equals("HIGH")){
+                       viewHolder.priority
+                               .setImageDrawable(ContextCompat
+                                       .getDrawable(MainActivity.this,
+                                               R.drawable.priority_high));
+                   }else if(Todo.getPriority().equals("MEDIUM")){
+                       viewHolder.priority
+                               .setImageDrawable(ContextCompat
+                                       .getDrawable(MainActivity.this,
+                                               R.drawable.priority_normal));
+                   }else{
+                       viewHolder.priority
+                               .setImageDrawable(ContextCompat
+                                       .getDrawable(MainActivity.this,
+                                               R.drawable.priority_low));
+                   }
                 }
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         FragmentManager fm = getSupportFragmentManager();
                         Todo clickedItem = mFirebaseAdapter.getItem(position);
-
-
                         EditItemFragment frag = new EditItemFragment();
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("todoItem",clickedItem);

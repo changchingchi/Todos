@@ -1,16 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:padding="20dp">
 
-    <Spinner
+    <TextView
+        android:text="Priority"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner" />
+        android:id="@+id/TextViewPriorityTitle"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="0dp"
+        android:elevation="0dp"
+        android:paddingTop="8dp" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/priorityRadioGroup">
+
+        <RadioButton
+            android:text="High Priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButtonHigh"
+            android:layout_marginBottom="20dp"
+            android:contextClickable="true"
+            android:layout_weight="1"
+            android:layout_marginLeft="16dp" />
+
+        <RadioButton
+            android:text="Medium Priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButtonMedium"
+            android:layout_marginBottom="20dp"
+            android:contextClickable="true"
+            android:layout_weight="1"
+            android:layout_marginLeft="16dp" />
+
+        <RadioButton
+            android:text="Low Priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButtonLow"
+            android:layout_marginBottom="8dp"
+            android:checked="true"
+            android:cursorVisible="false"
+            android:contextClickable="true"
+            android:layout_weight="1"
+            android:layout_marginLeft="16dp" />
+    </RadioGroup>
 
     <Button
-        android:text="@string/save"
-        android:layout_width="match_parent"
+        android:text="@string/choose"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/prioritySave" />
+        android:id="@+id/prioritySave"
+        android:layout_gravity="right"
+        android:background="@android:color/transparent" />
 </LinearLayout>
