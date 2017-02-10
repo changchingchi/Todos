@@ -64,11 +64,12 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center|left"
+                android:gravity="left|center"
                 android:id="@+id/textViewDate"
                 android:layout_weight="0.8"
                 android:clickable="true"
-                android:hint="Date" />
+                android:hint="Date"
+                android:textSize="18sp" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -84,14 +85,38 @@
                 android:id="@+id/imageViewTime"
                 android:layout_weight="0.2"
                 android:layout_gravity="center"/>
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center|left"
+                android:gravity="left|center"
                 android:id="@+id/textViewTime"
                 android:layout_weight="0.8"
-                android:hint="Time" />
+                android:hint="Time"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:baselineAligned="false">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                app:srcCompat="@drawable/alarmclock"
+                android:id="@+id/imageViewAlarm"
+                android:layout_weight="0.2"
+                android:layout_gravity="center"/>
+            <Switch
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="left|center"
+                android:text="Reminder"
+                android:id="@+id/switchAlarm"
+                android:layout_weight="0.8"
+                android:textSize="18sp"
+                android:textColor="?android:attr/textColorTertiary" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -111,10 +136,11 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center|left"
+                android:gravity="left|center"
                 android:id="@+id/textViewPriority"
                 android:layout_weight="0.8"
-                android:hint="Priority" />
+                android:hint="Priority"
+                android:textSize="18sp" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -135,9 +161,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/EditTextDescription"
-                android:gravity="center|left"
+                android:gravity="left|center"
                 android:layout_weight="0.8"
-                android:hint="Note" />
+                android:hint="Note"
+                android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

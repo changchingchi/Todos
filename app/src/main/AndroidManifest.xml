@@ -22,6 +22,9 @@
         <activity android:name=".SignInActivity.SignupActivity" />
 
         <!--<activity android:name=".EditItemActivity"></activity>-->
+        <service
+            android:name=".AlarmController.AlarmService"
+            android:exported="false"/>
     </application>
 
 </manifest>

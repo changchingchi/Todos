@@ -4,7 +4,7 @@
 
 Submitted by: **Changching Chi**
 
-Time spent: **X** hours spent in total
+Time spent: **120** hours spent in total
 
 ## User Stories
 
@@ -32,6 +32,7 @@ The following **additional** features are implemented:
 * [X] Add swipe-to-delete functionality.
 * [X] Add UNDO option for deleted item.
 * [ ] Create alarm for reminder
+
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:

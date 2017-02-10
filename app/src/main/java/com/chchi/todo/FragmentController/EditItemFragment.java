@@ -1,13 +1,17 @@
 package com.chchi.todo.FragmentController;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,10 +24,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.chchi.todo.AlarmController.AlarmService;
 import com.chchi.todo.FireBaseUtils.Firebase;
 import com.chchi.todo.ListViewController.Todo;
 import com.chchi.todo.R;
@@ -31,11 +37,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by chchi on 11/2/16.
@@ -54,6 +65,9 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
     TextView mPriorityTextView;
     @Bind(R.id.EditTextDescription)
     EditText mDescriptionEditText;
+    @Bind(R.id.switchAlarm)
+    Switch mAlarmSwitch;
+
     Todo ClickedTodo;
     private FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
@@ -166,6 +180,9 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
             map.put("date",mDateTextView.getText().toString());
             map.put("time",mTimeTextView.getText().toString());
             map.put("priority",mPriorityTextView.getText().toString());
+            if(mAlarmSwitch.isChecked()){
+                setAlarm(map,stringToDate(mDateTextView.getText().toString()+mTimeTextView.getText().toString()).getTime());
+            }
             Todo todo = new Todo(map);
             if(isEditedItem){
                 //user wants to update item.
@@ -181,6 +198,15 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
         }else{
             Toast.makeText(getActivity(),"invalid inputs", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void setAlarm(Map<String,String> map, long timeInMillis) {
+            Intent i = new Intent(getActivity(), AlarmService.class);
+            i.putExtra(AlarmService.TODOTEXT, map.get("title"));
+            AlarmManager am = (AlarmManager)getActivity().getSystemService(ALARM_SERVICE);
+            PendingIntent pi = PendingIntent.getService(getContext(),399, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.set(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
+        Log.d("test", "setAlarm "+399+" time: "+timeInMillis+" PI "+pi.toString());
     }
 
     @Override
@@ -262,4 +288,16 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
 //        Toast.makeText(getActivity(), "Hi, "+priority, Toast.LENGTH_SHORT).show();
         mPriorityTextView.setText(priority);
     }
+
+    private Date stringToDate(String s){
+        Date date = null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/ddHH:mm");
+        try {
+             date = format.parse(s);
+        } catch (java.text.ParseException e) {
+            // TODO Auto-generated catch block
+        }
+        return date;
+    }
+
 }
