@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private RecyclerView mTodoRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Initialize SwipeToRefreshLayout.
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.content_main);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Here to refetch the data on server.
+
+                Toast.makeText(getApplicationContext(),"onRefresh Called", Toast.LENGTH_LONG).show();
+                //To end the spinning animation.
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         // Initialize ProgressBar and RecyclerView.
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
