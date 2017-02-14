@@ -13,7 +13,6 @@ import java.util.HashMap;
 public class Todo implements Parcelable{
 
 
-    private String id;
     public String priority;
     public String title;
     public String date;
@@ -21,6 +20,10 @@ public class Todo implements Parcelable{
     public String description;
     public View view;
     public int position;
+    public String id;
+    public boolean finish;
+    public boolean alarm;
+
     public Todo(){
 
     }
@@ -31,19 +34,33 @@ public class Todo implements Parcelable{
         this.priority = map.get("priority");
         this.date = map.get("date");
         this.time = map.get("time");
+        this.finish = Boolean.valueOf(map.get("finish"));
+        this.alarm = Boolean.valueOf(map.get("isAlarm"));
+    }
+    public void setFinish(boolean isDone){
+        this.finish = isDone;
+    }
+    public boolean getFinish(){
+        return this.finish;
+    }
+
+    public void setAlarm(boolean isAlarm){
+        this.alarm = isAlarm;
+    }
+    public boolean getAlarm(){
+        return this.alarm;
     }
 
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }
+
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -112,5 +129,6 @@ public class Todo implements Parcelable{
         date = in.readString();
         time = in.readString();
         priority = in.readString();
+
     }
 }

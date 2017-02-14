@@ -1,14 +1,20 @@
 package com.chchi.todo.FragmentController;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,11 +47,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.ALARM_SERVICE;
 
 /**
@@ -54,6 +60,7 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class EditItemFragment extends DialogFragment implements EditPriorityFragment.EditPriorityListener{
     private static final String USER_CHILD = "users" ;
+    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 29;
     //ButterKnife Binding
     @Bind(R.id.taskET)
     EditText mTaskEditText;
@@ -74,6 +81,7 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
     public DatabaseReference mFirebaseDatabaseReference;
     private boolean isEditedItem;
     private String ClickedTodoKey=null;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public EditItemFragment() {
         // Empty constructor is required for DialogFragment
@@ -112,9 +120,9 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
             if(ClickedTodo.getPriority()!=null || !ClickedTodo.getPriority().isEmpty()) {
                 mPriorityTextView.setText(ClickedTodo.getPriority());
             }
+            Boolean isAlarm = ClickedTodo.getAlarm() ? (Boolean.TRUE) : (Boolean.FALSE);
+            mAlarmSwitch.setChecked(isAlarm);
         }
-
-
 
         mFirebaseDatabaseReference = Firebase.getDatabase().getReference();
         mFirebaseAuth = Firebase.getFirebaseAuth();
@@ -164,12 +172,55 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
             case R.id.save:
                 PostToFireBase();
                 return true;
-
+            case R.id.photoCamera:
+                AttachPhotoToNote();
             default:
                 break;
         }
 
         return false;
+    }
+
+    private void AttachPhotoToNote() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED){
+            //REQUEST CAMERA PERMISSION
+            requestPermissions(
+                    new String[]{Manifest.permission.CAMERA},
+                    MY_PERMISSIONS_REQUEST_CAMERA);
+        }else{
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     private void PostToFireBase() {
@@ -180,10 +231,13 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
             map.put("date",mDateTextView.getText().toString());
             map.put("time",mTimeTextView.getText().toString());
             map.put("priority",mPriorityTextView.getText().toString());
-            if(mAlarmSwitch.isChecked()){
-                setAlarm(map,stringToDate(mDateTextView.getText().toString()+mTimeTextView.getText().toString()).getTime());
-            }
+
+            //flags to control alarm
+            map.put("isAlarm",mAlarmSwitch.isChecked()+"");
+            map.put("finish",Boolean.FALSE.toString());
+
             Todo todo = new Todo(map);
+
             if(isEditedItem){
                 //user wants to update item.
                 mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(ClickedTodoKey).setValue(todo);
@@ -191,8 +245,21 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
                 isEditedItem = false;
             }else{
                 //user wants to add new item.
+//                mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
+//                        .push().setValue(todo);
+
+                ClickedTodoKey = mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
+                        .push().getKey();
+
                 mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
-                        .push().setValue(todo);
+                        .child(ClickedTodoKey).setValue(todo);
+            }
+            if(mAlarmSwitch.isChecked()){
+                setAlarm(todo,stringToDate(mDateTextView.getText().toString()+mTimeTextView.getText().toString()).getTime());
+            }else if(!mAlarmSwitch.isChecked()){
+                //in case we need to reset
+                todo.setAlarm(Boolean.FALSE);
+                todo.setFinish(Boolean.FALSE);
             }
             this.dismiss();
         }else{
@@ -200,9 +267,13 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
         }
     }
 
-    private void setAlarm(Map<String,String> map, long timeInMillis) {
+    private void setAlarm(Todo todo, long timeInMillis) {
             Intent i = new Intent(getActivity(), AlarmService.class);
-            i.putExtra(AlarmService.TODOTEXT, map.get("title"));
+            Bundle alarmBundle = new Bundle();
+            alarmBundle.putParcelable("alarmTodo",todo);
+            //pass the firebase key
+            alarmBundle.putString("clickedTodoKey",ClickedTodoKey);
+            i.putExtra(AlarmService.TODOBUNDLE,alarmBundle);
             AlarmManager am = (AlarmManager)getActivity().getSystemService(ALARM_SERVICE);
             PendingIntent pi = PendingIntent.getService(getContext(),399, i, PendingIntent.FLAG_UPDATE_CURRENT);
             am.set(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
@@ -300,4 +371,12 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
         return date;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            mImageView.setImageBitmap(imageBitmap);
+            mDescriptionEditText.setCompoundDrawablesWithIntrinsicBounds(null,null,null,new BitmapDrawable(getResources(),imageBitmap));
+        }    }
 }

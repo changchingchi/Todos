@@ -1,12 +1,13 @@
 package com.chchi.todo;
 
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.chchi.todo.AlarmController.AlarmService;
 import com.chchi.todo.FireBaseUtils.Firebase;
 import com.chchi.todo.FragmentController.EditItemFragment;
 import com.chchi.todo.ListViewController.Todo;
@@ -35,6 +37,8 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
+import static com.chchi.todo.R.layout.todo;
+
 public class MainActivity extends AppCompatActivity {
     private static final String USER_CHILD = "users";
     // Firebase instance variables
@@ -47,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private RecyclerView mTodoRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        ListView list = (ListView) findViewById(R.id.Listview);
-//        list.setAdapter(new TodoAdaptor(this));
+
         // Initialize Firebase Auth
         Firebase.getDatabase();
         mFirebaseAuth = Firebase.getFirebaseAuth();
@@ -86,19 +88,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize SwipeToRefreshLayout.
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.content_main);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //Here to refetch the data on server.
-
-                Toast.makeText(getApplicationContext(),"onRefresh Called", Toast.LENGTH_LONG).show();
-                //To end the spinning animation.
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
         // Initialize ProgressBar and RecyclerView.
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mTodoRecyclerView = (RecyclerView) findViewById(R.id.TodoRecyclerView);
@@ -111,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Todo,
                 TodoViewHolder>(
                 Todo.class,
-                R.layout.todo,
+                todo,
                 TodoViewHolder.class,
                 mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())) {
             @Override
@@ -145,6 +134,19 @@ public class MainActivity extends AppCompatActivity {
                                        .getDrawable(MainActivity.this,
                                                R.drawable.priority_low));
                    }
+                }
+                if(Todo.getAlarm()&&Todo.getFinish()){
+                    //if flag says true, then we need to update the text view with finished UI.
+                    viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    viewHolder.description.setPaintFlags(viewHolder.description.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                    viewHolder.date.setPaintFlags(viewHolder.date.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                    viewHolder.time.setPaintFlags(viewHolder.time.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                }else if(!Todo.getAlarm()&&!Todo.getFinish()){
+                    viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    viewHolder.description.setPaintFlags(viewHolder.description.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    viewHolder.date.setPaintFlags(viewHolder.date.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    viewHolder.time.setPaintFlags(viewHolder.time.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
+
                 }
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -230,6 +232,30 @@ public class MainActivity extends AppCompatActivity {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(mTodoRecyclerView);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle mAlarmBundle = getIntent().getBundleExtra(AlarmService.TODOBUNDLE);
+        if(mAlarmBundle!=null){
+            //remove notification from status bar due to bug.
+            NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            manager.cancel(100);
+            //the activity is trigger by notification.
+            Todo alarmTodo = mAlarmBundle.getParcelable("alarmTodo");
+            String clickedTodoKey = mAlarmBundle.getString("clickedTodoKey");
+            //user click "did it" so we update the flag in object.
+            alarmTodo.setFinish(Boolean.TRUE);
+            alarmTodo.setAlarm(Boolean.TRUE);
+            mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(clickedTodoKey).setValue(alarmTodo);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        //for singleTask activity to catch intent.
+        setIntent(intent);
     }
 
     @Override
