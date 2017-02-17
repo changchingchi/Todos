@@ -10,8 +10,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -39,10 +41,16 @@ import com.chchi.todo.AlarmController.AlarmService;
 import com.chchi.todo.FireBaseUtils.Firebase;
 import com.chchi.todo.ListViewController.Todo;
 import com.chchi.todo.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -74,10 +82,13 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
     EditText mDescriptionEditText;
     @Bind(R.id.switchAlarm)
     Switch mAlarmSwitch;
+//    @Bind(R.id.)
 
     Todo ClickedTodo;
     private FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
+    private StorageReference mStorageReference;
+    private Uri downloadUrl = null;
     public DatabaseReference mFirebaseDatabaseReference;
     private boolean isEditedItem;
     private String ClickedTodoKey=null;
@@ -127,6 +138,10 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
         mFirebaseDatabaseReference = Firebase.getDatabase().getReference();
         mFirebaseAuth = Firebase.getFirebaseAuth();
         mFirebaseUser= mFirebaseAuth.getCurrentUser();
+
+
+        // Initialize Firebase Storage
+        mStorageReference = FirebaseStorage.getInstance().getReference();
         return rootView;
     }
 
@@ -234,12 +249,23 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
 
             //flags to control alarm
             map.put("isAlarm",mAlarmSwitch.isChecked()+"");
-            map.put("finish",Boolean.FALSE.toString());
+//            map.put("finish",Boolean.FALSE.toString());
 
             Todo todo = new Todo(map);
-
+            if(downloadUrl!=null){
+                todo.setImageUrl(downloadUrl.toString());
+            }
             if(isEditedItem){
                 //user wants to update item.
+                //if this is a done item, we need to compare new time with exist time, if newer than we need to unmark the cross text.
+                String oldTime = ClickedTodo.getDate()+ClickedTodo.getTime();
+                Date oldDate = stringToDate(oldTime);
+                String newTime = mDateTextView.getText().toString()+mTimeTextView.getText().toString();
+                Date curDate = stringToDate(newTime);
+                if(curDate.getTime()>oldDate.getTime()){
+                    //the done item has been updated with new time, unmake the text by resetting alarm/finish.
+                    todo.setFinish(Boolean.FALSE);
+                }
                 mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(ClickedTodoKey).setValue(todo);
                 //reset flag for new edit item.
                 isEditedItem = false;
@@ -247,14 +273,13 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
                 //user wants to add new item.
 //                mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
 //                        .push().setValue(todo);
-
                 ClickedTodoKey = mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
                         .push().getKey();
-
                 mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
                         .child(ClickedTodoKey).setValue(todo);
             }
-            if(mAlarmSwitch.isChecked()){
+            if(mAlarmSwitch.isChecked()&&!todo.getFinish()){
+                //set alarm for unfinished item only.
                 setAlarm(todo,stringToDate(mDateTextView.getText().toString()+mTimeTextView.getText().toString()).getTime());
             }else if(!mAlarmSwitch.isChecked()){
                 //in case we need to reset
@@ -348,10 +373,10 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
     }
 
     public boolean isValidInput() {
-//        return !(mTaskEditText.getText().toString().isEmpty()||
-//                mDateTextView.getText().toString().isEmpty()||
-//                mTimeTextView.getText().toString().isEmpty());
-        return !(mTaskEditText.getText().toString().isEmpty());
+        return !(mTaskEditText.getText().toString().isEmpty()||
+                mDateTextView.getText().toString().isEmpty()||
+                mTimeTextView.getText().toString().isEmpty());
+//        return !(mTaskEditText.getText().toString().isEmpty());
     }
 
     @Override
@@ -377,6 +402,27 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
 //            mImageView.setImageBitmap(imageBitmap);
-            mDescriptionEditText.setCompoundDrawablesWithIntrinsicBounds(null,null,null,new BitmapDrawable(getResources(),imageBitmap));
+            mDescriptionEditText.setCompoundDrawablesWithIntrinsicBounds(null,null,new BitmapDrawable(getResources(),imageBitmap),null);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            //0-100. 0 meaning compress for small size, 100 meaning compress for max quality.
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 0, baos);
+            byte[] data2 = baos.toByteArray();
+
+            mStorageReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(ClickedTodoKey).child("notePhoto.jpg");
+            UploadTask uploadTask = mStorageReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(ClickedTodoKey).child("notePhoto.jpg").putBytes(data2);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    downloadUrl = taskSnapshot.getDownloadUrl();
+                }
+            });
+
+
         }    }
 }

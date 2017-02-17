@@ -9,17 +9,18 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.chchi.todo.AlarmController.AlarmService;
 import com.chchi.todo.FireBaseUtils.Firebase;
 import com.chchi.todo.FragmentController.EditItemFragment;
@@ -33,7 +34,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     public DatabaseReference mFirebaseDatabaseReference;
     private FirebaseRecyclerAdapter<Todo, TodoViewHolder>
             mFirebaseAdapter;
-    private FirebaseStorage mFirebaseStorage;
     private ProgressBar mProgressBar;
     private RecyclerView mTodoRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
@@ -71,12 +70,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
             return;
-        } else {
-//            mUsername = mFirebaseUser.getDisplayName();
-//            if (mFirebaseUser.getPhotoUrl() != null) {
-//                mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
-//            }
         }
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,18 +131,34 @@ public class MainActivity extends AppCompatActivity {
                                                R.drawable.priority_low));
                    }
                 }
-                if(Todo.getAlarm()&&Todo.getFinish()){
+                if (Todo.getImageUrl() == null) {
+                    //if we cannot find image, then we dont want to take place in layout at all.
+                    viewHolder.mImageView.setVisibility(View.GONE);
+                } else {
+                    viewHolder.mImageView.setVisibility(View.VISIBLE);
+                    Glide.with(MainActivity.this)
+                            .load(Todo.getImageUrl())
+                            .into(viewHolder.mImageView);
+                }
+                Log.d("MainAcitvity", Todo.title +" is finished? "+ Todo.getFinish());
+                if(Todo.getFinish()){
                     //if flag says true, then we need to update the text view with finished UI.
                     viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     viewHolder.description.setPaintFlags(viewHolder.description.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
                     viewHolder.date.setPaintFlags(viewHolder.date.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
                     viewHolder.time.setPaintFlags(viewHolder.time.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-                }else if(!Todo.getAlarm()&&!Todo.getFinish()){
+//                }else if(!Todo.getAlarm()&&!Todo.getFinish()){
+//                    viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+//                    viewHolder.description.setPaintFlags(viewHolder.description.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
+//                    viewHolder.date.setPaintFlags(viewHolder.date.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
+//                    viewHolder.time.setPaintFlags(viewHolder.time.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
+
+                }else if(!Todo.getFinish()){
+                    // user update the item from done item to new item. unmark it.
                     viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                     viewHolder.description.setPaintFlags(viewHolder.description.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
                     viewHolder.date.setPaintFlags(viewHolder.date.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
                     viewHolder.time.setPaintFlags(viewHolder.time.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
-
                 }
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -164,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mTodoRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mTodoRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+//        mTodoRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         mTodoRecyclerView.setAdapter(mFirebaseAdapter);
         mFirebaseDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
