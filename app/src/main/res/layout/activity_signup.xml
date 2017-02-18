@@ -7,10 +7,21 @@
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_weight="0.2"
+        android:layout_weight="0.4"
         android:layout_height="0dp"
         android:background="@drawable/background_with_shadow">
-
+        <TextView
+            android:text="An application for the opportunities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textColor="#ffffff"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true" />
         <TextView
             android:text="WONDERTODO"
             android:layout_width="wrap_content"
@@ -29,7 +40,7 @@
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
     <ScrollView
-android:layout_weight="0.8"
+android:layout_weight="0.6"
 android:layout_width="match_parent"
 android:layout_height="0dp">
 
