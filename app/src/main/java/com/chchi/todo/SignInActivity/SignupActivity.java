@@ -37,14 +37,8 @@ public class SignupActivity extends AppCompatActivity {
     private static final String USER_CHILD = "users" ;
     private ProgressDialog progressDialog;
 
-    @Bind(R.id.input_name)
-    EditText _nameText;
-    @Bind(R.id.input_address)
-    EditText _addressText;
     @Bind(R.id.input_email)
     EditText _emailText;
-    @Bind(R.id.input_mobile)
-    EditText _mobileText;
     @Bind(R.id.input_password)
     EditText _passwordText;
     @Bind(R.id.input_reEnterPassword)
@@ -183,41 +177,15 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
         String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
-        //mock data first.
-
-        if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
-            valid = false;
-        } else {
-            _nameText.setError(null);
-        }
-
-        if (address.isEmpty()) {
-            _addressText.setError("Enter Valid Address");
-            valid = false;
-        } else {
-            _addressText.setError(null);
-        }
-
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailText.setError("enter a valid email address");
             valid = false;
         } else {
             _emailText.setError(null);
-        }
-
-        if (mobile.isEmpty() || mobile.length()!=10) {
-            _mobileText.setError("Enter Valid Mobile Number");
-            valid = false;
-        } else {
-            _mobileText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
