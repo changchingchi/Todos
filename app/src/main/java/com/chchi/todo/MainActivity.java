@@ -20,7 +20,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.chchi.todo.AlarmController.AlarmService;
 import com.chchi.todo.FireBaseUtils.Firebase;
 import com.chchi.todo.FragmentController.EditItemFragment;
@@ -40,6 +39,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import static com.chchi.todo.R.layout.todo;
 
 public class MainActivity extends AppCompatActivity {
+    private String TAG = this.getClass().getSimpleName();
     private static final String USER_CHILD = "users";
     // Firebase instance variables
     private FirebaseUser mFirebaseUser;
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate called");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,14 +73,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                Intent intent = new Intent(MainActivity.this,EditItemActivity.class);
-//                startActivity(intent);
                 showEditDialog();
             }
         });
@@ -131,15 +128,6 @@ public class MainActivity extends AppCompatActivity {
                                                R.drawable.priority_low));
                    }
                 }
-                if (Todo.getImageUrl() == null) {
-                    //if we cannot find image, then we dont want to take place in layout at all.
-                    viewHolder.mImageView.setVisibility(View.GONE);
-                } else {
-                    viewHolder.mImageView.setVisibility(View.VISIBLE);
-                    Glide.with(MainActivity.this)
-                            .load(Todo.getImageUrl())
-                            .into(viewHolder.mImageView);
-                }
                 Log.d("MainAcitvity", Todo.title +" is finished? "+ Todo.getFinish());
                 if(Todo.getFinish()){
                     //if flag says true, then we need to update the text view with finished UI.
@@ -147,12 +135,6 @@ public class MainActivity extends AppCompatActivity {
                     viewHolder.description.setPaintFlags(viewHolder.description.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
                     viewHolder.date.setPaintFlags(viewHolder.date.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
                     viewHolder.time.setPaintFlags(viewHolder.time.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-//                }else if(!Todo.getAlarm()&&!Todo.getFinish()){
-//                    viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-//                    viewHolder.description.setPaintFlags(viewHolder.description.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
-//                    viewHolder.date.setPaintFlags(viewHolder.date.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
-//                    viewHolder.time.setPaintFlags(viewHolder.time.getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
-
                 }else if(!Todo.getFinish()){
                     // user update the item from done item to new item. unmark it.
                     viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -176,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mTodoRecyclerView.setLayoutManager(mLinearLayoutManager);
-//        mTodoRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         mTodoRecyclerView.setAdapter(mFirebaseAdapter);
         mFirebaseDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -248,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG,"onResume called");
         Bundle mAlarmBundle = getIntent().getBundleExtra(AlarmService.TODOBUNDLE);
         if(mAlarmBundle!=null){
             //remove notification from status bar due to bug.
@@ -264,9 +246,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy called");
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         //for singleTask activity to catch intent.
+        Log.d(TAG,"onNewIntent called");
         setIntent(intent);
     }
 
@@ -279,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-//        menu.findItem(R.id.action_settings).setVisible(true);
         return super.onPrepareOptionsMenu(menu);
     }
 

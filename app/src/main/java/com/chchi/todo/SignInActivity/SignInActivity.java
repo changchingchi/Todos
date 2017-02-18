@@ -15,6 +15,7 @@
  */
 package com.chchi.todo.SignInActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -49,10 +50,10 @@ import butterknife.ButterKnife;
 public class SignInActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    private static final String TAG = "SignInActivity";
+    private final String TAG = this.getClass().getSimpleName();
     private static final int RC_SIGN_IN = 9001;
     private static final int REQUEST_SIGNUP = 0;
-
+    private ProgressDialog progressDialog;
 
 //    private SignInButton mSignInButton;
 
@@ -63,8 +64,8 @@ public class SignInActivity extends AppCompatActivity implements
 
 
     //ButterKnife Binding
-    @Bind(R.id.sign_in_button)
-    SignInButton mSignInButton;
+    @Bind(R.id.google_sign_in_button)
+    SignInButton mGoogleSignInButton;
     @Bind(R.id.input_email)
     EditText mEmailText;
     @Bind(R.id.input_password)
@@ -79,19 +80,20 @@ public class SignInActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
-
+        Log.d(TAG,"onCreate called");
         // Set click listeners for google login
-        mSignInButton.setOnClickListener(this);
+        mGoogleSignInButton.setOnClickListener(this);
         // Set click listeners for email login
         mLoginButton.setOnClickListener(this);
-        mSignupTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
-                finish();
-            }
-        });
+//        mSignupTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+//                startActivityForResult(intent, REQUEST_SIGNUP);
+//                finish();
+//            }
+//        });
+        mSignupTextView.setOnClickListener(this);
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -109,8 +111,8 @@ public class SignInActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
+            case R.id.google_sign_in_button:
+                googleSignIn();
                 break;
             case R.id.btn_login:
                 emailLogin();
@@ -122,50 +124,32 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     public void emailLogin() {
-        Log.d(TAG, "Login");
-
-//        if (!validate()) {
-//            onLoginFailed();
-//            return;
-//        }
-
         mLoginButton.setEnabled(false);
-
-//        final ProgressDialog progressDialog = new ProgressDialog(SignInActivity.this, R.style.AppTheme_Dark);
-//        progressDialog.setIndeterminate(true);
-//        progressDialog.setMessage("Authenticating...");
-//        progressDialog.show();
+        //setting a dialog when talking to firebase...
+        progressDialog = ProgressDialog.show(SignInActivity.this, "Please wait ...",	"Authenticating ...", true);
+        progressDialog.setCancelable(false);
 
         String email = mEmailText.getText().toString();
         String password = mPasswordText.getText().toString();
-
-//        new android.os.Handler().postDelayed(
-//                new Runnable() {
-//                    public void run() {
-//                        // On complete call either onLoginSuccess or onLoginFailed
-//                        onLoginSuccess();
-//                        // onLoginFailed();
-//                        progressDialog.dismiss();
-//                    }
-//                }, 3000);
-
-
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            progressDialog.dismiss();
                             onLoginSuccess();
-//                            progressDialog.dismiss();
-
                         } else {
+                            progressDialog.dismiss();
                             onLoginFailed(task);
                         }
                     }
                 });
     }
+    private void googleSignIn() {
+        //setting a dialog when talking to firebase...
+        progressDialog = ProgressDialog.show(SignInActivity.this, "Please wait ...",	"Authenticating ...", true);
+        progressDialog.setCancelable(false);
 
-    private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -185,6 +169,10 @@ public class SignInActivity extends AppCompatActivity implements
                 // Google Sign In failed
                 Log.e(TAG, "Google Sign In failed.");
             }
+        }else if(requestCode == REQUEST_SIGNUP){
+            if(resultCode == RESULT_OK){
+                startActivity(new Intent(SignInActivity.this, MainActivity.class));
+            }
         }
     }
 
@@ -196,15 +184,15 @@ public class SignInActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
+                            progressDialog.dismiss();
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(SignInActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            onLoginFailed(task);
                         } else {
+                            progressDialog.dismiss();
                             startActivity(new Intent(SignInActivity.this, MainActivity.class));
                             finish();
                         }
@@ -228,7 +216,6 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     public void onLoginFailed(Task<AuthResult> task) {
-//        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(SignInActivity.this);
         builder.setMessage(task.getException().getMessage())
                 .setTitle("cannot find user")
@@ -238,29 +225,6 @@ public class SignInActivity extends AppCompatActivity implements
         mLoginButton.setEnabled(true);
     }
 
-    public boolean validate() {
-        boolean valid = true;
-
-        String email = mEmailText.getText().toString();
-        String password = mPasswordText.getText().toString();
-
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            mEmailText.setError("enter a valid email address");
-            valid = false;
-        } else {
-            mEmailText.setError(null);
-        }
-
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            mPasswordText.setError("between 4 and 10 alphanumeric characters");
-            valid = false;
-        } else {
-            mPasswordText.setError(null);
-        }
-
-        return valid;
-    }
-
     private void emailSignUp(){
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
@@ -268,5 +232,15 @@ public class SignInActivity extends AppCompatActivity implements
 //                finish();
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
-    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG,"onStop called");
+    }
 }

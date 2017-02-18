@@ -18,10 +18,8 @@ public class TodoViewHolder extends RecyclerView.ViewHolder{
     public TextView time;
     public TextView date;
     public View mView;
-    public ImageView mImageView;
     public TodoViewHolder(View view){
         super(view);
-        this.mImageView = (ImageView) itemView.findViewById(R.id.todo_image);
         this.mView = view;
         this.title = (TextView) itemView.findViewById(R.id.todo_title);
         this.description = (TextView) itemView.findViewById(R.id.todo_subtitle);

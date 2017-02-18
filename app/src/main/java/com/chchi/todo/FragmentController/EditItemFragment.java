@@ -1,22 +1,15 @@
 package com.chchi.todo.FragmentController;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,16 +34,12 @@ import com.chchi.todo.AlarmController.AlarmService;
 import com.chchi.todo.FireBaseUtils.Firebase;
 import com.chchi.todo.ListViewController.Todo;
 import com.chchi.todo.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,7 +48,6 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.ALARM_SERVICE;
 
 /**
@@ -68,7 +56,6 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class EditItemFragment extends DialogFragment implements EditPriorityFragment.EditPriorityListener{
     private static final String USER_CHILD = "users" ;
-    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 29;
     //ButterKnife Binding
     @Bind(R.id.taskET)
     EditText mTaskEditText;
@@ -187,55 +174,11 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
             case R.id.save:
                 PostToFireBase();
                 return true;
-            case R.id.photoCamera:
-                AttachPhotoToNote();
             default:
                 break;
         }
 
         return false;
-    }
-
-    private void AttachPhotoToNote() {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
-            //REQUEST CAMERA PERMISSION
-            requestPermissions(
-                    new String[]{Manifest.permission.CAMERA},
-                    MY_PERMISSIONS_REQUEST_CAMERA);
-        }else{
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_CAMERA: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                    }
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
     }
 
     private void PostToFireBase() {
@@ -252,9 +195,6 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
 //            map.put("finish",Boolean.FALSE.toString());
 
             Todo todo = new Todo(map);
-            if(downloadUrl!=null){
-                todo.setImageUrl(downloadUrl.toString());
-            }
             if(isEditedItem){
                 //user wants to update item.
                 //if this is a done item, we need to compare new time with exist time, if newer than we need to unmark the cross text.
@@ -271,8 +211,6 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
                 isEditedItem = false;
             }else{
                 //user wants to add new item.
-//                mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
-//                        .push().setValue(todo);
                 ClickedTodoKey = mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
                         .push().getKey();
                 mFirebaseDatabaseReference.child(USER_CHILD).child(mFirebaseUser.getUid())
@@ -395,34 +333,4 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
         }
         return date;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            mImageView.setImageBitmap(imageBitmap);
-            mDescriptionEditText.setCompoundDrawablesWithIntrinsicBounds(null,null,new BitmapDrawable(getResources(),imageBitmap),null);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //0-100. 0 meaning compress for small size, 100 meaning compress for max quality.
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 0, baos);
-            byte[] data2 = baos.toByteArray();
-
-            mStorageReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(ClickedTodoKey).child("notePhoto.jpg");
-            UploadTask uploadTask = mStorageReference.child(USER_CHILD).child(mFirebaseUser.getUid()).child(ClickedTodoKey).child("notePhoto.jpg").putBytes(data2);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    downloadUrl = taskSnapshot.getDownloadUrl();
-                }
-            });
-
-
-        }    }
 }

@@ -1,25 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_weight="0.2"
+        android:layout_height="0dp"
+        android:background="@drawable/background_with_shadow">
+
+        <TextView
+            android:text="WONDERTODO"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:textSize="36sp"
+            android:textColor="#ffffff"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+    <ScrollView
+android:layout_weight="0.8"
+android:layout_width="match_parent"
+android:layout_height="0dp">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="56dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
-
-        <ImageView android:src="@drawable/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
+        android:paddingTop="36dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:layout_height="match_parent">
 
         <!-- Name Label -->
+
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,7 +131,9 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Create Account"/>
+            android:background="@color/colorPrimary"
+            android:textColor="#ffffff"
+            android:text="Register"/>
 
         <TextView android:id="@+id/link_login"
             android:layout_width="fill_parent"
@@ -120,3 +145,4 @@
 
     </LinearLayout>
 </ScrollView>
+</LinearLayout>

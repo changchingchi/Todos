@@ -23,8 +23,6 @@ public class Todo implements Parcelable{
     public String id;
     public boolean finish;
     public boolean alarm;
-    public String photoURL;
-
     public Todo(){
 
     }
@@ -130,13 +128,5 @@ public class Todo implements Parcelable{
         date = in.readString();
         time = in.readString();
         priority = in.readString();
-
-    }
-
-    public String getImageUrl() {
-        return photoURL;
-    }
-    public void setImageUrl(String photoUrl){
-        this.photoURL = photoUrl;
     }
 }

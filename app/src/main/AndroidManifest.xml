@@ -24,13 +24,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:windowSoftInputMode="stateHidden"
             android:name=".SignInActivity.SignInActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:windowSoftInputMode="stateHidden"
             android:name=".SignInActivity.SignupActivity"
             android:screenOrientation="portrait"/>
-
-        <!--<activity android:name=".EditItemActivity"></activity>-->
         <service
             android:name=".AlarmController.AlarmService"
             android:exported="false"/>

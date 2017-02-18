@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/myCoordinatorLayout"
-    tools:context="com.chchi.todo.MainActivity">
+    tools:context="com.chchi.todo.MainActivity"
+    android:background="#f2f2f2">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

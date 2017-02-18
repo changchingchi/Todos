@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.chchi.todo.FireBaseUtils.Firebase;
 import com.chchi.todo.ListViewController.Todo;
-import com.chchi.todo.MainActivity;
 import com.chchi.todo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,8 +33,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class SignupActivity extends AppCompatActivity {
-    private static final String TAG = "SignupActivity";
+    private final String TAG = this.getClass().getSimpleName();
     private static final String USER_CHILD = "users" ;
+    private ProgressDialog progressDialog;
 
     @Bind(R.id.input_name)
     EditText _nameText;
@@ -60,6 +60,7 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate called");
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
 
@@ -112,9 +113,19 @@ public class SignupActivity extends AppCompatActivity {
         mFirebaseAuth.addAuthStateListener(mAuthListener);
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG,"onResume called");
+
+    }
+
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG,"onStop called");
+
         if (mAuthListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthListener);
         }
@@ -127,43 +138,29 @@ public class SignupActivity extends AppCompatActivity {
             onSignupFailed();
             return;
         }
-
         _signupButton.setEnabled(false);
+        progressDialog = ProgressDialog.show(SignupActivity.this, "Please wait ...",	"Creating account ...", true);
+        progressDialog.setCancelable(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
-
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
         String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
         mFirebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            progressDialog.dismiss();
-                            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             HashMap<String,String> map = new HashMap<String, String>();
                             DateFormat date = new SimpleDateFormat("dd/MM/yy", Locale.US);
-                            DateFormat time = new SimpleDateFormat(" HH:mm:ss",Locale.US);
+                            DateFormat time = new SimpleDateFormat(" HH:mm",Locale.US);
                             Date dateobj = new Date();
-                            System.out.println();
                             map.put("title","This your first item");
                             map.put("description","click it and see the options!");
                             map.put("date",date.format(dateobj));
                             map.put("time",time.format(dateobj));
+                            map.put("priority","LOW");
                             mFirebaseDatabaseReference.child(USER_CHILD).child(task.getResult().getUser().getUid())
                                     .push().setValue(new Todo(map));
-//                            startActivity(intent);
-
+                            onSignupSuccess();
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
                             builder.setMessage(task.getException().getMessage())
@@ -174,28 +171,19 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     }
                 });
-//        new android.os.Handler().postDelayed(
-//                new Runnable() {
-//                    public void run() {
-//                        // On complete call either onSignupSuccess or onSignupFailed
-//                        // depending on success
-//                        onSignupSuccess();
-//                        // onSignupFailed();
-//                        progressDialog.dismiss();
-//                    }
-//                }, 3000);
     }
 
 
     public void onSignupSuccess() {
+        progressDialog.dismiss();
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
         finish();
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+        progressDialog.dismiss();
+        Toast.makeText(getBaseContext(), "Check you inputs!", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 
@@ -254,5 +242,10 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy called");
     }
 }

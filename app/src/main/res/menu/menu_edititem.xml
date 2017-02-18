@@ -7,9 +7,4 @@
         app:showAsAction="always"
         android:icon="@drawable/checked"
         />
-    <item
-        android:id="@+id/photoCamera"
-        app:showAsAction="always"
-        android:title="photo"
-        android:icon="@drawable/camera" />
 </menu>

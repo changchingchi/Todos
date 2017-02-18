@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="2dp"
-    app:contentPaddingLeft="4dp"
+    app:contentPaddingLeft="8dp"
     app:contentPaddingRight="4dp"
     android:layout_marginBottom="4dp"
     android:layout_marginTop="4dp"
@@ -82,16 +82,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="16dp"
             app:layout_constraintHorizontal_bias="1.0" />
-
-        <ImageView
-            android:layout_width="78dp"
-            android:layout_height="32dp"
-            app:srcCompat="@drawable/happy_android"
-            android:id="@+id/todo_image"
-            app:layout_constraintTop_toBottomOf="@+id/todo_Image_priority"
-            app:layout_constraintBottom_toTopOf="@+id/space"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
