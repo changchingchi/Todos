@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -37,8 +36,6 @@ import com.chchi.todo.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -69,17 +66,13 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
     EditText mDescriptionEditText;
     @Bind(R.id.switchAlarm)
     Switch mAlarmSwitch;
-//    @Bind(R.id.)
 
     Todo ClickedTodo;
     private FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
-    private StorageReference mStorageReference;
-    private Uri downloadUrl = null;
     public DatabaseReference mFirebaseDatabaseReference;
     private boolean isEditedItem;
     private String ClickedTodoKey=null;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public EditItemFragment() {
         // Empty constructor is required for DialogFragment
@@ -126,9 +119,6 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
         mFirebaseAuth = Firebase.getFirebaseAuth();
         mFirebaseUser= mFirebaseAuth.getCurrentUser();
 
-
-        // Initialize Firebase Storage
-        mStorageReference = FirebaseStorage.getInstance().getReference();
         return rootView;
     }
 
@@ -177,7 +167,6 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
             default:
                 break;
         }
-
         return false;
     }
 
@@ -314,12 +303,10 @@ public class EditItemFragment extends DialogFragment implements EditPriorityFrag
         return !(mTaskEditText.getText().toString().isEmpty()||
                 mDateTextView.getText().toString().isEmpty()||
                 mTimeTextView.getText().toString().isEmpty());
-//        return !(mTaskEditText.getText().toString().isEmpty());
     }
 
     @Override
     public void onFinishEditPriority(String priority) {
-//        Toast.makeText(getActivity(), "Hi, "+priority, Toast.LENGTH_SHORT).show();
         mPriorityTextView.setText(priority);
     }
 

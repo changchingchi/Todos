@@ -85,14 +85,7 @@ public class SignInActivity extends AppCompatActivity implements
         mGoogleSignInButton.setOnClickListener(this);
         // Set click listeners for email login
         mLoginButton.setOnClickListener(this);
-//        mSignupTextView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-//                startActivityForResult(intent, REQUEST_SIGNUP);
-//                finish();
-//            }
-//        });
+        // Set click listeners for signup textview
         mSignupTextView.setOnClickListener(this);
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

@@ -65,7 +65,6 @@
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
                     android:hint="Email"
-                    android:text="email@email.com"
                     android:textSize="18sp"
                     android:gravity="center_vertical"
                     />
@@ -79,7 +78,6 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:hint="Password"
-                    android:text="123456"
                     />
             </android.support.design.widget.TextInputLayout>
             <android.support.v7.widget.AppCompatButton

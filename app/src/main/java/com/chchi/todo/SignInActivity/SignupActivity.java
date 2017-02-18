@@ -66,13 +66,6 @@ public class SignupActivity extends AppCompatActivity {
 
         mFirebaseDatabaseReference = Firebase.getDatabase().getReference();
         mFirebaseAuth = Firebase.getFirebaseAuth();
-
-        _nameText.setText("chi");
-        _addressText.setText("address");
-        _emailText.setText("email@email.com");
-        _mobileText.setText("1232131231");
-        _passwordText.setText("123456");
-        _reEnterPasswordText.setText("123456");
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
