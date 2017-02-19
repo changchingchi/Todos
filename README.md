@@ -12,7 +12,7 @@ The following **required** functionality is completed:
 
 * [X] User can **successfully add and remove items** from the todo list
 * [X] User can **tap a todo item in the list and bring up an edit screen for the todo item** and then have any changes to the text reflected in the todo list.
-* [X] User can **persist todo items** and retrieve them properly on app restart -- The app uses firebase as service.
+* [X] User can **persist todo items** and retrieve them properly on app restart -- The app uses firebase as service and enable offline data handling.
 
 The following **optional** features are implemented:
 
@@ -26,24 +26,33 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 * [X] Support multiple devices synchronization
-* [X] Support Sign-In Page using google account or email.
+* [X] Update layout to cardview for better UI.
+* [X] Leverage Google Login into Sing-In page.
+* [X] Add custom animation between Sign-In and Sign-up page.
+* [X] Support Sign-In Page using Google account or email.
 * [X] Support Sign-Up Page using traditional email.
 * [X] Client input validation.
-* [X] Add swipe-to-delete functionality.
-* [X] Add UNDO option for deleted item.
-* [ ] Create alarm for reminder
+* [X] Add **swipe-to-delete** functionality.
+* [X] Add **UNDO** option for deleted item.
+* [X] Create alarm for reminder, and enable cross out done item when user finished it.
+* [ ] Add photo note feature -- future action item. (integrate with firebase storage)
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='walkthru.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+1. Migrate Activity to Fragment for listview item.
+2. Pass item back and forth between acitivty and fragment. Fragment to its parent fragment.
+3. Migrate simple listview to viewhold and recyclerview in order to recycle the view to avoid heavy load.
+4. Switch to google firebase and enable realtime database from traditional SQLite database/ internal storage.
+
+ When I decided move away from traditional android database to remote database using google firebase, it was a big challenge to me since this is a new stuff to me. I had to re-structure the style I had before in the project in order to fit the requirement of realtime database data model pattern. It was a fun story to me. During the implementation, I leveraged the authentication in to the application and also set up the database rule for the request in order to provide the security to users data on remote server. I had encountered singleton issue from the library as well as concurrency issue for accessing the database. that was a long non-sleep night for me as a firebase first timer to sort out the tricks. I have learnt alot from this project although it is just a todo list. I think It has met the every requirement to get on Google Play store. I am trying to make it function-wise as close as possible to EVERNOTES or GOOGLE KEEP. I had photo note functionality before in the project, however, due to the lack of time working on the project, I have not yet figured out how to make firebase storage in to my project, but i am close to it.
 
 ## License
 
