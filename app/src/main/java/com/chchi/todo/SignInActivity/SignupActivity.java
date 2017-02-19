@@ -120,15 +120,13 @@ public class SignupActivity extends AppCompatActivity {
 
     public void signup() {
         Log.d(TAG, "Signup");
-
+        _signupButton.setEnabled(false);
+        progressDialog = ProgressDialog.show(SignupActivity.this, "Please wait ...",	"Creating account ...", true);
+        progressDialog.setCancelable(false);
         if (!validate()) {
             onSignupFailed();
             return;
         }
-        _signupButton.setEnabled(false);
-        progressDialog = ProgressDialog.show(SignupActivity.this, "Please wait ...",	"Creating account ...", true);
-        progressDialog.setCancelable(false);
-
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
         mFirebaseAuth.createUserWithEmailAndPassword(email, password)

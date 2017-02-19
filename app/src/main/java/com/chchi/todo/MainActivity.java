@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("UNDO", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getApplicationContext(),"snack bar clicked",Toast.LENGTH_LONG).show();
                                 currRef.setValue(deletedItem);
                             }
                         }).show();
