@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden"
             android:name=".SignInActivity.SignInActivity"
             android:screenOrientation="portrait"/>
