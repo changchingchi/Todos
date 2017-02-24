@@ -1,4 +1,4 @@
-package com.chchi.todo.AlarmController;
+package com.chchi.todo.services;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.chchi.todo.ListViewController.Todo;
-import com.chchi.todo.MainActivity;
+import com.chchi.todo.models.Todo;
+import com.chchi.todo.activities.MainActivity;
 import com.chchi.todo.R;
 
 /**

@@ -1,4 +1,4 @@
-package com.chchi.todo.FragmentController;
+package com.chchi.todo.fragments;
 
 import android.graphics.Point;
 import android.os.Bundle;

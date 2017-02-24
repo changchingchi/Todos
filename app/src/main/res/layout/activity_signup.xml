@@ -11,26 +11,26 @@
         android:layout_height="0dp"
         android:background="@drawable/background_with_shadow">
         <TextView
-            android:text="An application for the opportunities"
+            android:text="@string/an_application_for_the_opportunities"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textColor="#ffffff"
+            android:textColor="@color/colorTitle"
             android:gravity="center_horizontal"
             android:layout_below="@+id/textView"
             android:layout_centerHorizontal="true" />
         <TextView
-            android:text="WONDERTODO"
+            android:text="@string/app_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
             android:fontFamily="serif"
             android:textStyle="bold"
-            android:textSize="36sp"
-            android:textColor="#ffffff"
+            android:textSize="@dimen/textsize_title"
+            android:textColor="@color/colorTitle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -47,15 +47,10 @@ android:layout_height="0dp">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:paddingTop="36dp"
-        android:paddingLeft="48dp"
-        android:paddingRight="48dp"
-        android:layout_height="match_parent">
-
-        <!-- Name Label -->
-
-        <!-- Address Label -->
-
+        android:paddingTop="@dimen/login_paddingTop"
+        android:paddingLeft="@dimen/login_paddingLeft"
+        android:paddingRight="@dimen/login_paddingRight"
+        android:layout_height="wrap_content">
 
         <!--  Email Label -->
         <android.support.design.widget.TextInputLayout
@@ -67,7 +62,7 @@ android:layout_height="0dp">
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:hint="@string/email" />
         </android.support.design.widget.TextInputLayout>
 
 
@@ -83,7 +78,7 @@ android:layout_height="0dp">
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Password"/>
+                android:hint="@string/password"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Re-enter Label -->
@@ -96,7 +91,7 @@ android:layout_height="0dp">
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Re-enter Password"/>
+                android:hint="@string/re_enter_password"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Signup Button -->
@@ -109,15 +104,15 @@ android:layout_height="0dp">
             android:padding="12dp"
             android:background="@color/colorPrimary"
             android:textColor="#ffffff"
-            android:text="Register"/>
+            android:text="@string/register"/>
 
         <TextView android:id="@+id/link_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Already a member? Login"
+            android:text="@string/already_a_member_login"
             android:gravity="center"
-            android:textSize="16dip"/>
+            android:textSize="16sp"/>
 
     </LinearLayout>
 </ScrollView>

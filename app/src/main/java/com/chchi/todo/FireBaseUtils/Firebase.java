@@ -1,4 +1,4 @@
-package com.chchi.todo.FireBaseUtils;
+package com.chchi.todo.firebaseutils;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;

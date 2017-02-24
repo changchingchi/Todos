@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chchi.todo.SignInActivity;
+package com.chchi.todo.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chchi.todo.MainActivity;
 import com.chchi.todo.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

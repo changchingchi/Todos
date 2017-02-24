@@ -1,4 +1,4 @@
-package com.chchi.todo.ListViewController;
+package com.chchi.todo.models;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

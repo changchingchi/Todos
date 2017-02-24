@@ -17,4 +17,22 @@
     <string name="sign_in">WonderToDo</string>
     <string name="sign_up">Sign Up</string>
     <string name="choose">Choose</string>
+    <string name="app_title">WONDERTODO</string>
+    <string name="an_application_for_the_opportunities">An application for the opportunities</string>
+    <string name="email_login">Email Login</string>
+    <string name="email">Email</string>
+    <string name="no_account_yet_create_one">No account yet? Create one</string>
+    <string name="password">Password</string>
+    <string name="already_a_member_login">Already a member? Login</string>
+    <string name="register">Register</string>
+    <string name="re_enter_password">Re-enter Password</string>
+    <string name="date">Date</string>
+    <string name="note">Note</string>
+    <string name="priority">Priority</string>
+    <string name="reminder">Reminder</string>
+    <string name="time">Time</string>
+    <string name="task">Task</string>
+    <string name="low_priority">Low Priority</string>
+    <string name="medium_priority">Medium Priority</string>
+    <string name="high_priority">High Priority</string>
 </resources>

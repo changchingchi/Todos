@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="16dp"
@@ -23,34 +22,30 @@
         android:id="@+id/priorityRadioGroup">
 
         <RadioButton
-            android:text="High Priority"
+            android:text="@string/high_priority"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/radioButtonHigh"
             android:layout_marginBottom="20dp"
-            android:contextClickable="true"
             android:layout_weight="1"
             android:layout_marginLeft="16dp" />
 
         <RadioButton
-            android:text="Medium Priority"
+            android:text="@string/medium_priority"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/radioButtonMedium"
             android:layout_marginBottom="20dp"
-            android:contextClickable="true"
             android:layout_weight="1"
             android:layout_marginLeft="16dp" />
 
         <RadioButton
-            android:text="Low Priority"
+            android:text="@string/low_priority"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/radioButtonLow"
             android:layout_marginBottom="8dp"
             android:checked="true"
-            android:cursorVisible="false"
-            android:contextClickable="true"
             android:layout_weight="1"
             android:layout_marginLeft="16dp" />
     </RadioGroup>

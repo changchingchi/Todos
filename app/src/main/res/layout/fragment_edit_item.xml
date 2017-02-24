@@ -33,7 +33,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="Task"
+                    android:hint="@string/task"
                     android:inputType="text"
                     android:textSize="48sp"
                     android:maxLines="1"
@@ -68,7 +68,7 @@
                 android:id="@+id/textViewDate"
                 android:layout_weight="0.8"
                 android:clickable="true"
-                android:hint="Date"
+                android:hint="@string/date"
                 android:textSize="18sp" />
         </LinearLayout>
         <LinearLayout
@@ -91,7 +91,7 @@
                 android:gravity="left|center"
                 android:id="@+id/textViewTime"
                 android:layout_weight="0.8"
-                android:hint="Time"
+                android:hint="@string/time"
                 android:textSize="18sp" />
         </LinearLayout>
         <LinearLayout
@@ -112,7 +112,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="left|center"
-                android:text="Reminder"
+                android:text="@string/reminder"
                 android:id="@+id/switchAlarm"
                 android:layout_weight="0.8"
                 android:textSize="18sp"
@@ -139,7 +139,7 @@
                 android:gravity="left|center"
                 android:id="@+id/textViewPriority"
                 android:layout_weight="0.8"
-                android:hint="Priority"
+                android:hint="@string/priority"
                 android:textSize="18sp" />
         </LinearLayout>
         <LinearLayout
@@ -163,7 +163,7 @@
                 android:id="@+id/EditTextDescription"
                 android:gravity="left|center"
                 android:layout_weight="0.8"
-                android:hint="Note"
+                android:hint="@string/note"
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>

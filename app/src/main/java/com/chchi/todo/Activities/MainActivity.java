@@ -1,4 +1,4 @@
-package com.chchi.todo;
+package com.chchi.todo.activities;
 
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -20,12 +20,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.chchi.todo.AlarmController.AlarmService;
-import com.chchi.todo.FireBaseUtils.Firebase;
-import com.chchi.todo.FragmentController.EditItemFragment;
-import com.chchi.todo.ListViewController.Todo;
-import com.chchi.todo.ListViewController.TodoViewHolder;
-import com.chchi.todo.SignInActivity.SignInActivity;
+import com.chchi.todo.services.AlarmService;
+import com.chchi.todo.firebaseutils.Firebase;
+import com.chchi.todo.fragments.EditItemFragment;
+import com.chchi.todo.models.Todo;
+import com.chchi.todo.models.TodoViewHolder;
+import com.chchi.todo.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

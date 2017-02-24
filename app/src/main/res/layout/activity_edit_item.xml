@@ -15,6 +15,6 @@ android:fitsSystemWindows="true">
 
 </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_edit_item" />
+    <include layout="@layout/fragment_edit_item" />
 
 </android.support.design.widget.CoordinatorLayout>

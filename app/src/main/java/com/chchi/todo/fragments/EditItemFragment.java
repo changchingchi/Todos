@@ -1,4 +1,4 @@
-package com.chchi.todo.FragmentController;
+package com.chchi.todo.fragments;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -29,9 +29,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.chchi.todo.AlarmController.AlarmService;
-import com.chchi.todo.FireBaseUtils.Firebase;
-import com.chchi.todo.ListViewController.Todo;
+import com.chchi.todo.services.AlarmService;
+import com.chchi.todo.firebaseutils.Firebase;
+import com.chchi.todo.models.Todo;
 import com.chchi.todo.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

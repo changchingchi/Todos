@@ -1,4 +1,4 @@
-package com.chchi.todo.FragmentController;
+package com.chchi.todo.fragments;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;

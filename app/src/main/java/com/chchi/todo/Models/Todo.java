@@ -1,4 +1,4 @@
-package com.chchi.todo.ListViewController;
+package com.chchi.todo.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
